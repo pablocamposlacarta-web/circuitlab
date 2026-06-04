@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CircuitLab — Simulador de Circuitos</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ===== TOOLBAR (2 filas) ===== -->
+  <header id="toolbar">
+
+    <!-- Fila 1: Marca + botones de acción -->
+    <div id="toolbar-row1">
+      <div id="app-brand">
+        <span class="brand-icon">⚡</span>
+        <span class="brand-name">CircuitLab</span>
+      </div>
+      <div id="toolbar-actions">
+        <button id="btn-simulate" class="action-btn btn-primary" title="Simular Circuito (Espacio)">
+          <span class="btn-icon">▶</span> Simular
+        </button>
+        <button id="btn-stop" class="action-btn btn-danger" title="Detener Simulación">
+          <span class="btn-icon">■</span> Detener
+        </button>
+        <button id="btn-delete" class="action-btn btn-warning" title="Eliminar Selección (Supr)">
+          <span class="btn-icon">🗑</span> Borrar
+        </button>
+        <button id="btn-clear" class="action-btn" title="Limpiar todo el lienzo">
+          <span class="btn-icon">✕</span> Limpiar
+        </button>
+      </div>
+    </div>
+
+    <!-- Fila 2: Paleta de componentes -->
+    <div id="toolbar-row2">
+      <span class="palette-label">COMPONENTES</span>
+
+      <div class="palette-item" data-type="battery" draggable="true" title="Batería — fuente de voltaje">
+        <svg width="48" height="32" viewBox="0 0 48 32">
+          <line x1="2" y1="16" x2="14" y2="16" stroke="#FFD700" stroke-width="2.5"/>
+          <line x1="14" y1="8" x2="14" y2="24" stroke="#FFD700" stroke-width="3"/>
+          <line x1="20" y1="11" x2="20" y2="21" stroke="#FFD700" stroke-width="1.5"/>
+          <line x1="26" y1="8" x2="26" y2="24" stroke="#FFD700" stroke-width="3"/>
+          <line x1="32" y1="11" x2="32" y2="21" stroke="#FFD700" stroke-width="1.5"/>
+          <line x1="34" y1="16" x2="46" y2="16" stroke="#FFD700" stroke-width="2.5"/>
+          <text x="17" y="30" fill="#FFD700" font-size="7" font-family="monospace">+</text>
+          <text x="29" y="30" fill="#888" font-size="7" font-family="monospace">−</text>
+        </svg>
+        <span>Batería</span>
+      </div>
+
+      <div class="palette-item" data-type="resistor" draggable="true" title="Resistencia (Ohmios)">
+        <svg width="48" height="32" viewBox="0 0 48 32">
+          <line x1="2" y1="16" x2="10" y2="16" stroke="#FF6B35" stroke-width="2.5"/>
+          <rect x="10" y="10" width="28" height="12" rx="2" fill="none" stroke="#FF6B35" stroke-width="2.5"/>
+          <line x1="38" y1="16" x2="46" y2="16" stroke="#FF6B35" stroke-width="2.5"/>
+          <line x1="17" y1="10" x2="17" y2="22" stroke="#FFD700" stroke-width="1.5" opacity="0.8"/>
+          <line x1="24" y1="10" x2="24" y2="22" stroke="#888" stroke-width="1.5" opacity="0.8"/>
+          <line x1="31" y1="10" x2="31" y2="22" stroke="#FF4444" stroke-width="1.5" opacity="0.8"/>
+        </svg>
+        <span>Resistencia</span>
+      </div>
+
+      <div class="palette-item" data-type="switch" draggable="true" title="Interruptor">
+        <svg width="48" height="32" viewBox="0 0 48 32">
+          <line x1="2" y1="16" x2="14" y2="16" stroke="#4FC3F7" stroke-width="2.5"/>
+          <circle cx="14" cy="16" r="3" fill="#4FC3F7"/>
+          <line x1="17" y1="16" x2="34" y2="8" stroke="#4FC3F7" stroke-width="2.5"/>
+          <circle cx="34" cy="16" r="3" fill="#4FC3F7"/>
+          <line x1="34" y1="16" x2="46" y2="16" stroke="#4FC3F7" stroke-width="2.5"/>
+        </svg>
+        <span>Interruptor</span>
+      </div>
+
+      <div class="palette-item" data-type="led" draggable="true" title="LED / Bombilla">
+        <svg width="48" height="32" viewBox="0 0 48 32">
+          <line x1="2" y1="16" x2="14" y2="16" stroke="#A8FF78" stroke-width="2.5"/>
+          <circle cx="24" cy="16" r="10" fill="none" stroke="#A8FF78" stroke-width="2.5"/>
+          <line x1="19" y1="11" x2="29" y2="21" stroke="#A8FF78" stroke-width="2"/>
+          <line x1="29" y1="11" x2="19" y2="21" stroke="#A8FF78" stroke-width="2"/>
+          <line x1="34" y1="16" x2="46" y2="16" stroke="#A8FF78" stroke-width="2.5"/>
+          <line x1="26" y1="6" x2="30" y2="2" stroke="#FFD700" stroke-width="1.5" opacity="0.7"/>
+          <line x1="30" y1="8" x2="35" y2="5" stroke="#FFD700" stroke-width="1.5" opacity="0.7"/>
+        </svg>
+        <span>Bombilla</span>
+      </div>
+
+      <div class="palette-item" data-type="ammeter" draggable="true" title="Amperímetro">
+        <svg width="48" height="32" viewBox="0 0 48 32">
+          <line x1="2" y1="16" x2="12" y2="16" stroke="#FF9FF3" stroke-width="2.5"/>
+          <circle cx="24" cy="16" r="10" fill="none" stroke="#FF9FF3" stroke-width="2.5"/>
+          <text x="20" y="21" fill="#FF9FF3" font-size="11" font-family="monospace" font-weight="bold">A</text>
+          <line x1="36" y1="16" x2="46" y2="16" stroke="#FF9FF3" stroke-width="2.5"/>
+        </svg>
+        <span>Amperímetro</span>
+      </div>
+
+      <div class="palette-item" data-type="voltmeter" draggable="true" title="Voltímetro">
+        <svg width="48" height="32" viewBox="0 0 48 32">
+          <line x1="2" y1="16" x2="12" y2="16" stroke="#78D2FF" stroke-width="2.5"/>
+          <circle cx="24" cy="16" r="10" fill="none" stroke="#78D2FF" stroke-width="2.5"/>
+          <text x="20" y="21" fill="#78D2FF" font-size="11" font-family="monospace" font-weight="bold">V</text>
+          <line x1="36" y1="16" x2="46" y2="16" stroke="#78D2FF" stroke-width="2.5"/>
+        </svg>
+        <span>Voltímetro</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== MAIN LAYOUT ===== -->
+  <div id="main-layout">
+
+    <!-- Canvas -->
+    <div id="canvas-container">
+      <canvas id="circuit-canvas"></canvas>
+      <div id="canvas-hint">
+        Arrastra componentes desde arriba o haz clic en la paleta.<br>
+        Conecta terminales (círculos) para formar el circuito.
+      </div>
+    </div>
+
+    <!-- Panel lateral -->
+    <aside id="side-panel">
+      <div class="panel-section" id="props-panel">
+        <h3 class="panel-title">⚙ Propiedades</h3>
+        <div id="props-content">
+          <p class="props-hint">Selecciona un componente en el lienzo para editar sus propiedades.</p>
+        </div>
+      </div>
+
+      <div class="panel-section" id="results-panel">
+        <h3 class="panel-title">📊 Resultados</h3>
+        <div id="results-content">
+          <div class="result-row">
+            <span class="result-label">Estado:</span>
+            <span id="res-status" class="result-value status-open">Abierto</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Voltaje total:</span>
+            <span id="res-voltage" class="result-value">— V</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Corriente:</span>
+            <span id="res-current" class="result-value">— A</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">R total:</span>
+            <span id="res-resistance" class="result-value">— Ω</span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Potencia total:</span>
+            <span id="res-power" class="result-value">— W</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-section" id="resistivity-panel">
+        <h3 class="panel-title">🔬 Resistividad (ρ)</h3>
+        <div id="resistivity-content">
+          <div class="form-group">
+            <label>Material:</label>
+            <select id="rho-material">
+              <option value="1.72e-8">Cobre (Cu)</option>
+              <option value="2.82e-8">Aluminio (Al)</option>
+              <option value="1.59e-8">Plata (Ag)</option>
+              <option value="5.6e-8">Tungsteno (W)</option>
+              <option value="1.0e-6">Hierro (Fe)</option>
+              <option value="custom">Personalizado</option>
+            </select>
+          </div>
+          <div class="form-group" id="rho-custom-group" style="display:none;">
+            <label>ρ (Ω·m):</label>
+            <input type="number" id="rho-custom" step="1e-9" value="1.72e-8" />
+          </div>
+          <div class="form-group">
+            <label>Longitud (m):</label>
+            <input type="number" id="rho-length" value="1" min="0.001" step="0.1" />
+          </div>
+          <div class="form-group">
+            <label>Sección (mm²):</label>
+            <input type="number" id="rho-area" value="1" min="0.001" step="0.1" />
+          </div>
+          <button id="btn-calc-rho" class="action-btn btn-primary" style="width:100%;margin-top:6px;">
+            Calcular R del Cable
+          </button>
+          <div id="rho-result" class="rho-result" style="display:none;"></div>
+        </div>
+      </div>
+
+      <div class="panel-section" id="help-panel">
+        <h3 class="panel-title">💡 Atajos</h3>
+        <div class="help-list">
+          <div class="help-item"><kbd>Clic</kbd> Seleccionar</div>
+          <div class="help-item"><kbd>Arrastrar</kbd> Mover</div>
+          <div class="help-item"><kbd>Terminal→Term.</kbd> Conectar</div>
+          <div class="help-item"><kbd>Supr</kbd> Borrar selección</div>
+          <div class="help-item"><kbd>Espacio</kbd> Simular</div>
+          <div class="help-item"><kbd>Esc</kbd> Deseleccionar</div>
+          <div class="help-item"><kbd>Doble clic</kbd> Propiedades</div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal-overlay" class="hidden">
+    <div id="modal-box">
+      <div id="modal-title">Propiedades</div>
+      <div id="modal-body"></div>
+      <div id="modal-footer">
+        <button id="modal-ok" class="action-btn btn-primary">Aplicar</button>
+        <button id="modal-cancel" class="action-btn">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status bar -->
+  <div id="status-bar">
+    <span id="status-msg">Listo — arrastra un componente al lienzo para comenzar</span>
+    <span id="status-coords"></span>
+  </div>
+
+  <script src="solver.js"></script>
+  <script src="circuit.js"></script>
+</body>
+</html>
